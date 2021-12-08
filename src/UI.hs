@@ -61,7 +61,7 @@ main = do
   forkIO $ forever $ do
     writeBChan chan Tick
     threadDelay 100000 -- decides how fast your game moves
-  g <- initGame
+  g <- initGame2
   let builder = V.mkVty V.defaultConfig
   initialVty <- builder
   void $ customMain initialVty builder (Just chan) app g
@@ -78,7 +78,7 @@ handleEvent g (VtyEvent (V.EvKey (V.KChar 'k') [])) = continue $ turn North g
 handleEvent g (VtyEvent (V.EvKey (V.KChar 'j') [])) = continue $ turn South g
 handleEvent g (VtyEvent (V.EvKey (V.KChar 'l') [])) = continue $ turn East g
 handleEvent g (VtyEvent (V.EvKey (V.KChar 'h') [])) = continue $ turn West g
-handleEvent g (VtyEvent (V.EvKey (V.KChar 'r') [])) = liftIO (initGame) >>= continue
+handleEvent g (VtyEvent (V.EvKey (V.KChar 'r') [])) = liftIO (initGame2) >>= continue
 handleEvent g (VtyEvent (V.EvKey (V.KChar 'q') [])) = halt g
 handleEvent g (VtyEvent (V.EvKey V.KEsc []))        = halt g
 handleEvent g _                                     = continue g
@@ -143,3 +143,4 @@ snakeAttr, foodAttr, emptyAttr :: AttrName
 snakeAttr = "snakeAttr"
 foodAttr = "foodAttr"
 emptyAttr = "emptyAttr"
+
