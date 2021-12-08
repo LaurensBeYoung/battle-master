@@ -135,7 +135,7 @@ theMap :: AttrMap
 theMap = attrMap V.defAttr
   [ (player1Attr, V.blue `on` V.blue)
    ,(player2Attr, V.white `on` V.white)
-   ,(emptyAttr, V.red `on` V.red)
+   ,(emptyAttr, V.black `on` V.black)
   --, (foodAttr, V.red `on` V.red)
   --, (gameOverAttr, fg V.red `V.withStyle` V.bold)
   ]

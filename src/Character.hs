@@ -50,8 +50,8 @@ makeLenses '' Game
 
 
 myheight, mywidth :: Int
-myheight = 100
-mywidth  = 100
+myheight = 30
+mywidth  = 50
 
 initGame :: IO Game
 initGame = do
