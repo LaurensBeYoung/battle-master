@@ -2,7 +2,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE TemplateHaskell #-}
 module Snake
-  ( init
+  ( initGame2
   , step
   , turn
   , Game(..)
@@ -56,8 +56,8 @@ makeLenses ''Game
 -- Constants
 
 height, width :: Int
-height = 30
-width = 30
+height = 300
+width = 300
 
 -- Functions
 
@@ -126,8 +126,8 @@ turnDir n c | c `elem` [North, South] && n `elem` [East, West] = n
             | otherwise = c
 
 -- | Initialize a paused game with random food location
-init :: IO Game
-init = do
+initGame2 :: IO Game
+initGame2 = do
   (f :| fs) <-
     fromList . randomRs (V2 0 0, V2 (width - 1) (height - 1)) <$> newStdGen
   let xm = width `div` 2
@@ -146,7 +146,3 @@ init = do
 
 fromList :: [a] -> Stream a
 fromList = foldr (:|) (error "Streams must be infinite")
-
-
-
-
