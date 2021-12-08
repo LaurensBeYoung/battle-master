@@ -147,3 +147,4 @@ player1Attr, player2Attr, emptyAttr :: AttrName
 player1Attr = "player1Attr"
 player2Attr = "player2Attr"
 emptyAttr = "emptyAttr"
+
