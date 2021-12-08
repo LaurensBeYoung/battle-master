@@ -26,6 +26,7 @@ import System.IO.Unsafe
 
 type Coord = V2 Int
 
+--data Player = player1 | player2
 
 data Game = Game
   { _d      :: Direction         -- ^ direction
@@ -50,8 +51,8 @@ makeLenses '' Game
 
 
 myheight, mywidth :: Int
-myheight = 30
-mywidth  = 50
+myheight = 10
+mywidth  = 10
 
 initGame :: IO Game
 initGame = do
@@ -74,6 +75,43 @@ initState = do
   s <- get
   put s
 
+-- check if play1 on border
+outBorder1:: Game -> Direction ->  Bool
+outBorder1 g North  = do
+  let (V2 x y) = g ^. player1
+  if y+1>=myheight then True
+  else False
+outBorder1 g South  = do
+  let (V2 x y) = g ^. player1
+  if y-1<=0 then True
+  else False
+outBorder1 g East  = do
+  let (V2 x y) = g ^. player1
+  if x+1>=mywidth then True
+  else False
+outBorder1 g West  = do
+  let (V2 x y) = g ^. player1
+  if x-1<=0 then True
+  else False
+
+  -- check if play2 on border
+outBorder2:: Game -> Direction ->  Bool
+outBorder2 g North  = do
+  let (V2 x y) = g ^. player2
+  if y+1>=myheight then True
+  else False
+outBorder2 g South  = do
+  let (V2 x y) = g ^. player2
+  if y-1<=0 then True
+  else False
+outBorder2 g East  = do
+  let (V2 x y) = g ^. player2
+  if x+1>=mywidth then True
+  else False
+outBorder2 g West  = do
+  let (V2 x y) = g ^. player2
+  if x-1<=0 then True
+  else False
 
 check :: Game -> Game
 check g = do
@@ -89,7 +127,7 @@ moves1 North g = do
   let (V2 x y) = g ^. player1
   if g ^. win == True then g
   else if g ^. gameOver == True then g
-  else if y >= myheight - 1 then g
+  else if y >= myheight-1 then g
   else 
     check(check_die (g)) & (player1 %~ (\(V2 a b) -> (V2 a (b+1))))
 
@@ -97,7 +135,7 @@ moves1 East g = do
   let (V2 x y) = g ^. player1
   if g ^. win == True then g
   else if g ^. gameOver == True then g
-  else if y >= myheight - 1 then g
+  else if x >= mywidth-1  then g
   else 
     check(check_die (g)) & (player1 %~ (\(V2 a b) -> (V2 (a+1) b)))
 
@@ -105,7 +143,7 @@ moves1 West g = do
   let (V2 x y) = g ^. player1
   if g ^. win == True then g
   else if g ^. gameOver == True then g
-  else if y >= myheight - 1 then g
+  else if x <= 0 then g
   else 
     check(check_die (g)) & (player1 %~ (\(V2 a b) -> (V2 (a-1) b)))
 
@@ -113,7 +151,7 @@ moves1 South g = do
   let (V2 x y) = g ^. player1
   if g ^. win == True then g
   else if g ^. gameOver == True then g
-  else if y >= myheight - 1 then g
+  else if y <= 0 then g
   else 
     check(check_die (g)) & (player1 %~ (\(V2 a b) -> (V2 a (b-1))))
 
@@ -124,7 +162,7 @@ moves2 North g = do
   let (V2 x y) = g ^. player2
   if g ^. win == True then g
   else if g ^. gameOver == True then g
-  else if y >= myheight - 1 then g
+  else if y >= myheight-1 then g
   else 
     check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 a (b+1))))
 
@@ -132,7 +170,7 @@ moves2 East g = do
   let (V2 x y) = g ^. player2
   if g ^. win == True then g
   else if g ^. gameOver == True then g
-  else if y >= myheight - 1 then g
+  else if x >= mywidth-1  then g
   else 
     check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 (a+1) b)))
 
@@ -140,7 +178,7 @@ moves2 West g = do
   let (V2 x y) = g ^. player2
   if g ^. win == True then g
   else if g ^. gameOver == True then g
-  else if y >= myheight - 1 then g
+  else if x <= 0 then g
   else 
     check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 (a-1) b)))
 
@@ -148,9 +186,7 @@ moves2 South g = do
   let (V2 x y) = g ^. player2
   if g ^. win == True then g
   else if g ^. gameOver == True then g
-  else if y >= myheight - 1 then g
+  else if y <= 0  then g
   else 
     check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 a (b-1))))
-
-
 
