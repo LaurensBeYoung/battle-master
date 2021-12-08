@@ -50,14 +50,14 @@ makeLenses '' Game
 
 
 myheight, mywidth :: Int
-myheight = 10
-mywidth  = 10
+myheight = 100
+mywidth  = 100
 
 initGame :: IO Game
 initGame = do
-  let x1= 3
+  let x1= 6
       y1 = 2
-      x2 = 6
+      x2 = 3
       y2 = 2
       g = Game
         {
@@ -126,7 +126,7 @@ moves2 North g = do
   else if g ^. gameOver == True then g
   else if y >= myheight - 1 then g
   else 
-    check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 a (b-1))))
+    check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 a (b+1))))
 
 moves2 East g = do
   let (V2 x y) = g ^. player2
@@ -151,4 +151,6 @@ moves2 South g = do
   else if y >= myheight - 1 then g
   else 
     check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 a (b-1))))
+
+
 
