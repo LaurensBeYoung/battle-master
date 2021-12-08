@@ -146,3 +146,5 @@ initGame2 = do
 
 fromList :: [a] -> Stream a
 fromList = foldr (:|) (error "Streams must be infinite")
+
+
