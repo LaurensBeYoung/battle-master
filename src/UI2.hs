@@ -42,7 +42,7 @@ data Tick = Tick
 -- if we call this "Name" now.
 type Name = ()
 
-data Cell = Player1 | Player2 | Empty
+data Cell = Player1 | Player2 | Empty | Woods
 
 -- App definition
 
@@ -86,30 +86,33 @@ handleEvent g _                                     = continue g
 
 drawUI :: Game -> [Widget Name]
 drawUI g =
-  [ C.center $ padRight (Pad 2) (drawScore 0) <+> drawGrid g ]
+  [ C.center $ padRight (Pad 2) (drawStats g) <+> drawGrid g ]
 
---drawStats :: Game -> Widget Name
---drawStats g = hLimit 11
---  $ vBox [ drawScore (g ^. score)
---         , padTop (Pad 2) $ drawGameOver (g ^. dead)
---         ]
+drawStats :: Game -> Widget Name
+drawStats g = hLimit 11
+ $ vBox [ drawScore1 (g ^. score1)
+        , drawScore2 (g ^. score2)
+        , padTop (Pad 2) $ (drawGameOver1 (g ^. win2) (g ^. gameover))
+        , padTop (Pad 0) $ (drawGameOver2 (g ^. win1) (g ^. gameover))
+        ]
 
-drawScore :: Int -> Widget Name
-drawScore n = withBorderStyle BS.unicodeBold
-  $ B.borderWithLabel (str "Score")
+drawScore1 :: Int -> Widget Name
+drawScore1 n = withBorderStyle BS.unicodeBold
+  $ B.borderWithLabel (str "Score 1")
   $ C.hCenter
   $ padAll 1
   $ str $ show n
 
-drawGameOver :: Bool -> Widget Name
-drawGameOver dead =
-  if dead
-     then withAttr gameOverAttr $ C.hCenter $ str "GAME OVER"
-     else emptyWidget
+drawScore2 :: Int -> Widget Name
+drawScore2 n = withBorderStyle BS.unicodeBold
+  $ B.borderWithLabel (str "Score 2")
+  $ C.hCenter
+  $ padAll 1
+  $ str $ show n
 
 drawGrid :: Game -> Widget Name
 drawGrid g = withBorderStyle BS.unicodeBold
-  $ B.borderWithLabel (str "Snake")
+  $ B.borderWithLabel (str "Medieval Battle")
   $ vBox rows
   where
     rows         = [hBox $ cellsInRow r | r <- [myheight-1,myheight-2..0]]
@@ -118,13 +121,16 @@ drawGrid g = withBorderStyle BS.unicodeBold
     cellAt c
       | c == g ^. player1 = Player1
       | c == g ^. player2 = Player2
-    --  | c == g ^. food      = Food
+      | c `elem` (g ^. forest)  = Woods 
       | otherwise           = Empty
 
 drawCell :: Cell -> Widget Name
+drawCell Woods = withAttr forestAttr $ str " 🌲"
 drawCell Empty   = withAttr emptyAttr cw
-drawCell Player1   = withAttr player1Attr cw
-drawCell Player2   = withAttr player2Attr cw
+drawCell Player1   = withAttr player1Attr $ str " 👳"
+drawCell Player2   = withAttr player2Attr $ str " 🧕"
+--drawCell Woods     = withAttr forestAttr cw
+
 
 
 
@@ -133,18 +139,33 @@ cw = str "  "
 
 theMap :: AttrMap
 theMap = attrMap V.defAttr
-  [ (player1Attr, V.blue `on` V.blue)
-   ,(player2Attr, V.white `on` V.white)
+  [ (player1Attr, V.black `on` V.black)
+   ,(player2Attr, V.black `on` V.black)
    ,(emptyAttr, V.black `on` V.black)
-  --, (foodAttr, V.red `on` V.red)
-  --, (gameOverAttr, fg V.red `V.withStyle` V.bold)
+   ,(forestAttr, V.brightCyan `on` V.brightCyan)
+  , (gameOverAttr1, fg V.red `V.withStyle` V.bold)
+  , (gameOverAttr2, fg V.red `V.withStyle` V.bold)
   ]
+ 
+gameOverAttr1, gameOverAttr2:: AttrName
+gameOverAttr1 = "Player2 Win!"
+gameOverAttr2 = "Player1 Win!"
 
-gameOverAttr :: AttrName
-gameOverAttr = "gameOver"
-
-player1Attr, player2Attr, emptyAttr :: AttrName
+player1Attr, player2Attr, emptyAttr, forestAttr :: AttrName
 player1Attr = "player1Attr"
 player2Attr = "player2Attr"
 emptyAttr = "emptyAttr"
+forestAttr = "forestAttr"
 
+
+drawGameOver1 :: Bool -> Bool -> Widget Name
+drawGameOver1 win2 gameover=
+  if win2 && (gameover == True)
+     then withAttr gameOverAttr1 $ C.hCenter $ str "Player2 Win!"
+     else emptyWidget
+
+drawGameOver2 :: Bool -> Bool -> Widget Name
+drawGameOver2 win1 gameover  =
+  if win1 && (gameover == True)
+     then withAttr gameOverAttr2 $ C.hCenter $ str "Player1 Win!"
+  else emptyWidget
