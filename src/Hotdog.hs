@@ -37,6 +37,11 @@ data Result a
   = Cont a
   | Score Turn
   deriving (Eq,  Show)
+  
+myheight, mywidth :: Int
+myheight = 20
+mywidth  = 20
+
 
 
 addCoord :: Coordd -> Coordd -> Coordd
