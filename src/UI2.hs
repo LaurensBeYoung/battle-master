@@ -184,14 +184,3 @@ next :: Game -> Hotdog.Result Hotdog.Hotdog -> Either (Maybe Turn) (IO Game)
 next s (Cont b') = Right (return (s { _hotdog = b'} ))
 
 
-drawGameOver1 :: Bool -> Bool -> Widget Name
-drawGameOver1 win2 gameover=
-  if win2 && (gameover == True)
-     then withAttr gameOverAttr1 $ C.hCenter $ str "Player2 Win!"
-     else emptyWidget
-
-drawGameOver2 :: Bool -> Bool -> Widget Name
-drawGameOver2 win1 gameover  =
-  if win1 && (gameover == True)
-     then withAttr gameOverAttr2 $ C.hCenter $ str "Player1 Win!"
-  else emptyWidget
