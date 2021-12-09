@@ -11,11 +11,14 @@ module Character
   , score1,score2
   , win1,win2,gameover
   , forest
+  , hotdog
   ) where
 
 import Control.Applicative ((<|>))
 import Control.Monad (guard)
 import Data.Maybe (fromMaybe)
+
+import Hotdog
 
 import Control.Lens hiding ((<|), (|>), (:>), (:<))
 import Control.Monad.Trans.Maybe
@@ -41,9 +44,10 @@ data Game = Game
   , _win2 :: Bool
   , _gameover :: Bool
   , _forest :: [Coord]
+  , _hotdog :: Hotdog
   --, _woods :: [Coord]
   --, _unwalkable :: [Coord]
-  } deriving (Show)
+  } 
 
 
 data Direction
@@ -87,6 +91,7 @@ initGame = do
         , _win2 = False
         , _gameover = False
         , _forest   = trees
+        , _hotdog = initf
         }
   return (execState initState g)
 
@@ -231,5 +236,7 @@ moves2 South g = do
   else if y <= 0  then g
   else 
     check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 a (b-1))))
+
+
 
 
