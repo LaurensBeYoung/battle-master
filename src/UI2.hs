@@ -7,6 +7,7 @@ import Control.Concurrent (threadDelay, forkIO)
 import Data.Maybe (fromMaybe)
 
 import Character
+import Hotdog
 
 import Brick
   ( App(..), AttrMap, BrickEvent(..), EventM, Next, Widget
@@ -42,7 +43,7 @@ data Tick = Tick
 -- if we call this "Name" now.
 type Name = ()
 
-data Cell = Player1 | Player2 | Empty | Woods
+data Cell = Player1 | Player2 | Empty | Woods | HD
 
 -- App definition
 
@@ -68,7 +69,7 @@ main = do
 -- Handling events
 
 handleEvent :: Game -> BrickEvent Name Tick -> EventM Name (Next Game)
---handleEvent g (AppEvent Tick)                       = continue $ step g
+handleEvent g (AppEvent Tick)                       = nextS g (Cont (nextResult (g ^. hotdog)))
 handleEvent g (VtyEvent (V.EvKey V.KUp []))         = continue $ moves1 North g
 handleEvent g (VtyEvent (V.EvKey V.KDown []))       = continue $ moves1 South g
 handleEvent g (VtyEvent (V.EvKey V.KRight []))      = continue $ moves1 East g
@@ -92,8 +93,8 @@ drawStats :: Game -> Widget Name
 drawStats g = hLimit 11
  $ vBox [ drawScore1 (g ^. score1)
         , drawScore2 (g ^. score2)
-        , padTop (Pad 2) $ (drawGameOver1 (g ^. win2) (g ^. gameover))
-        , padTop (Pad 0) $ (drawGameOver2 (g ^. win1) (g ^. gameover))
+        , padTop (Pad 2) $ (drawGameOver1 (g ^. win2))
+        , padTop (Pad 0) $ (drawGameOver2 (g ^. win1))
         ]
 
 drawScore1 :: Int -> Widget Name
@@ -122,11 +123,13 @@ drawGrid g = withBorderStyle BS.unicodeBold
       | c == g ^. player1 = Player1
       | c == g ^. player2 = Player2
       | c `elem` (g ^. forest)  = Woods 
+      | c == (getCoordinate (g ^. hotdog)) = HD
       | otherwise           = Empty
 
 drawCell :: Cell -> Widget Name
-drawCell Woods = withAttr forestAttr $ str " 🌲"
-drawCell Empty   = withAttr emptyAttr cw
+drawCell Woods    = withAttr forestAttr $ str "💩 "
+drawCell Empty     = withAttr emptyAttr cw
+drawCell HD        = withAttr hotdogAttr $ str " 😅"
 drawCell Player1   = withAttr player1Attr $ str " 👳"
 drawCell Player2   = withAttr player2Attr $ str " 🧕"
 --drawCell Woods     = withAttr forestAttr cw
@@ -145,17 +148,40 @@ theMap = attrMap V.defAttr
    ,(forestAttr, V.brightCyan `on` V.brightCyan)
   , (gameOverAttr1, fg V.red `V.withStyle` V.bold)
   , (gameOverAttr2, fg V.red `V.withStyle` V.bold)
+  , (hotdogAttr, V.black `on` V.black)
   ]
  
 gameOverAttr1, gameOverAttr2:: AttrName
 gameOverAttr1 = "Player2 Win!"
 gameOverAttr2 = "Player1 Win!"
 
-player1Attr, player2Attr, emptyAttr, forestAttr :: AttrName
+player1Attr, player2Attr, emptyAttr, forestAttr, hotdogAttr:: AttrName
 player1Attr = "player1Attr"
 player2Attr = "player2Attr"
 emptyAttr = "emptyAttr"
 forestAttr = "forestAttr"
+hotdogAttr = "hotdogAttr"
+
+
+drawGameOver1 :: Bool  -> Widget Name
+drawGameOver1 win2 =
+  if win2 
+     then withAttr gameOverAttr1 $ C.hCenter $ str "Player2 Win!"
+     else emptyWidget
+
+drawGameOver2 :: Bool  -> Widget Name
+drawGameOver2 win1   =
+  if win1 
+     then withAttr gameOverAttr2 $ C.hCenter $ str "Player1 Win!"
+  else emptyWidget
+
+nextS :: Game -> Result Hotdog -> EventM Name (Next Game)
+nextS s b = case next s b of
+  Right s' -> continue =<< liftIO s'
+  Left res -> continue (s { _gameover = False })
+
+next :: Game -> Hotdog.Result Hotdog.Hotdog -> Either (Maybe Turn) (IO Game)
+next s (Cont b') = Right (return (s { _hotdog = b'} ))
 
 
 drawGameOver1 :: Bool -> Bool -> Widget Name
