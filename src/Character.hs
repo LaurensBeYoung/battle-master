@@ -8,6 +8,9 @@ module Character
   , Direction(..)
   , myheight, mywidth
   , player1,player2 --d, gameOver, --win, --rock, --unwalkable
+  , score1,score2
+  , win1,win2,gameover
+  , forest
   ) where
 
 import Control.Applicative ((<|>))
@@ -31,10 +34,14 @@ type Coord = V2 Int
 data Game = Game
   { _d      :: Direction         -- ^ direction
   , _player1 :: Coord 
-  , _player2  :: Coord            -- ^ the location of the player will be modified via I/O
-  , _gameOver :: Bool            -- ^ the bool value mark the game is live or dead      
-  , _win :: Bool
-  --, _rock :: [Coord]
+  , _player2  :: Coord    
+  , _score1 :: Int
+  , _score2 :: Int        
+  , _win1 :: Bool            
+  , _win2 :: Bool
+  , _gameover :: Bool
+  , _forest :: [Coord]
+  --, _woods :: [Coord]
   --, _unwalkable :: [Coord]
   } deriving (Show)
 
@@ -51,22 +58,35 @@ makeLenses '' Game
 
 
 myheight, mywidth :: Int
-myheight = 10
-mywidth  = 10
+myheight = 20
+mywidth  = 20
+
+
+trees :: [Coord]
+trees = [(V2 0 11), (V2 0 12), (V2 1 12), (V2 1 11),(V2 2 11), (V2 2 10), (V2 3 10), (V2 3 11), (V2 4 11),              (V2 5 11), (V2 5 12),(V2 6 12), (V2 6 13),(V2 7 13),
+        (V2 7 12), (V2 8 12), (V2 8 11), (V2 9 11), (V2 9 12), (V2 10 12), (V2 10 11), (V2 11 11), (V2 11 12), (V2 12 12), (V2 12 13),(V2 13 13), (V2 13 12),(V2 14 12),(V2 14 11),(V2 15 11),
+        (V2 16 11), (V2 17 11), (V2 18 11), (V2 18 12),(V2 19 12), (V2 20 12)
+        ]
+        
+  
 
 initGame :: IO Game
 initGame = do
-  let x1= 6
-      y1 = 2
-      x2 = 3
-      y2 = 2
+  let x1 = (mywidth `div` 2) - 1
+      y1 = (myheight `div` 3) - 1
+      x2 = (mywidth `div` 2) + 1
+      y2 = (myheight `div` 3) - 1
       g = Game
         {
           _d = South
         , _player1 = (V2 x1 y1)
         , _player2 = (V2 x2 y2)
-        , _gameOver = False
-        , _win = False
+        , _score1  = 10
+        , _score2  = 10
+        , _win1 = False
+        , _win2 = False
+        , _gameover = False
+        , _forest   = trees
         }
   return (execState initState g)
 
@@ -115,42 +135,52 @@ outBorder2 g West  = do
 
 check :: Game -> Game
 check g = do
-  g
+  if g^. win1 == True then g & gameover %~ (\_ -> True)
+  else if g^. win2 == True then g & gameover %~ (\_ -> True)
+  else g
 
 check_die :: Game -> Game
 check_die g = do
-  if g ^. win == True then g & gameOver %~ (\_ -> True)
+  let (V2 x y) = g ^. player1
+  let (V2 m n) = g ^. player2
+  
+  if g ^. player1 `elem` g ^. forest then g & win2 %~ (\_ -> True)
+  else if g ^. player2 `elem` g ^. forest then g & win1 %~ (\_ -> True)
   else g
 
 moves1 :: Direction -> Game -> Game
 moves1 North g = do
   let (V2 x y) = g ^. player1
-  if g ^. win == True then g
-  else if g ^. gameOver == True then g
+  let (V2 m n )= g ^. player2
+  if x==m && y+1==n then g
+  else if g ^. gameover == True then g
   else if y >= myheight-1 then g
   else 
     check(check_die (g)) & (player1 %~ (\(V2 a b) -> (V2 a (b+1))))
 
 moves1 East g = do
   let (V2 x y) = g ^. player1
-  if g ^. win == True then g
-  else if g ^. gameOver == True then g
+  let (V2 m n )= g ^. player2
+  if y==n && x+1==m then g
+  else if g ^. gameover == True then g
   else if x >= mywidth-1  then g
   else 
     check(check_die (g)) & (player1 %~ (\(V2 a b) -> (V2 (a+1) b)))
 
 moves1 West g = do
   let (V2 x y) = g ^. player1
-  if g ^. win == True then g
-  else if g ^. gameOver == True then g
+  let (V2 m n )= g ^. player2
+  if x==m+1 && y==n then g
+  else if g ^. gameover == True then g
   else if x <= 0 then g
   else 
     check(check_die (g)) & (player1 %~ (\(V2 a b) -> (V2 (a-1) b)))
 
 moves1 South g = do
   let (V2 x y) = g ^. player1
-  if g ^. win == True then g
-  else if g ^. gameOver == True then g
+  let (V2 m n )= g ^. player2
+  if x==m && y==n+1 then g
+  else if g ^. gameover == True then g
   else if y <= 0 then g
   else 
     check(check_die (g)) & (player1 %~ (\(V2 a b) -> (V2 a (b-1))))
@@ -160,33 +190,39 @@ moves1 South g = do
 moves2 :: Direction -> Game -> Game
 moves2 North g = do
   let (V2 x y) = g ^. player2
-  if g ^. win == True then g
-  else if g ^. gameOver == True then g
+  let (V2 m n )= g ^. player1
+  if x==m && y+1==n then g
+  else if g ^. gameover == True then g
   else if y >= myheight-1 then g
   else 
     check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 a (b+1))))
 
 moves2 East g = do
   let (V2 x y) = g ^. player2
-  if g ^. win == True then g
-  else if g ^. gameOver == True then g
+  let (V2 m n )= g ^. player1
+  if y==n && x+1==m then g
+  else if g ^. gameover == True then g
   else if x >= mywidth-1  then g
   else 
     check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 (a+1) b)))
 
 moves2 West g = do
   let (V2 x y) = g ^. player2
-  if g ^. win == True then g
-  else if g ^. gameOver == True then g
+  let (V2 m n )= g ^. player1
+  if x==m+1 && y==n then g
+  else if g ^. gameover == True then g
   else if x <= 0 then g
   else 
     check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 (a-1) b)))
 
 moves2 South g = do
   let (V2 x y) = g ^. player2
-  if g ^. win == True then g
-  else if g ^. gameOver == True then g
+  let (V2 m n )= g ^. player1
+  if x==m && y==n+1 then g
+  else if g ^. gameover == True then g
   else if y <= 0  then g
   else 
     check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 a (b-1))))
+
+
 
