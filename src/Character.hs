@@ -153,6 +153,7 @@ moves1 North g = do
   let (V2 x y) = g ^. player1
   let (V2 m n )= g ^. player2
   if x==m && y+1==n then g
+  else if g ^. player1 `elem` trees then g & win2 %~ (\_ -> True)
   else if g ^. gameover == True then g
   else if y >= myheight-1 then g
   else 
@@ -162,6 +163,7 @@ moves1 East g = do
   let (V2 x y) = g ^. player1
   let (V2 m n )= g ^. player2
   if y==n && x+1==m then g
+  else if g ^. player1 `elem` trees then g & win2 %~ (\_ -> True)
   else if g ^. gameover == True then g
   else if x >= mywidth-1  then g
   else 
@@ -171,6 +173,7 @@ moves1 West g = do
   let (V2 x y) = g ^. player1
   let (V2 m n )= g ^. player2
   if x==m+1 && y==n then g
+  else if g ^. player1 `elem` trees then g & win2 %~ (\_ -> True)
   else if g ^. gameover == True then g
   else if x <= 0 then g
   else 
@@ -180,6 +183,7 @@ moves1 South g = do
   let (V2 x y) = g ^. player1
   let (V2 m n )= g ^. player2
   if x==m && y==n+1 then g
+  else if g ^. player1 `elem` trees then g & win2 %~ (\_ -> True)
   else if g ^. gameover == True then g
   else if y <= 0 then g
   else 
@@ -192,6 +196,7 @@ moves2 North g = do
   let (V2 x y) = g ^. player2
   let (V2 m n )= g ^. player1
   if x==m && y+1==n then g
+  else if g ^. player2 `elem` trees then g & win1 %~ (\_ -> True)
   else if g ^. gameover == True then g
   else if y >= myheight-1 then g
   else 
@@ -201,6 +206,7 @@ moves2 East g = do
   let (V2 x y) = g ^. player2
   let (V2 m n )= g ^. player1
   if y==n && x+1==m then g
+  else if g ^. player2 `elem` trees then g & win1 %~ (\_ -> True)
   else if g ^. gameover == True then g
   else if x >= mywidth-1  then g
   else 
@@ -210,6 +216,7 @@ moves2 West g = do
   let (V2 x y) = g ^. player2
   let (V2 m n )= g ^. player1
   if x==m+1 && y==n then g
+  else if g ^. player2 `elem` trees then g & win1 %~ (\_ -> True)
   else if g ^. gameover == True then g
   else if x <= 0 then g
   else 
@@ -219,10 +226,10 @@ moves2 South g = do
   let (V2 x y) = g ^. player2
   let (V2 m n )= g ^. player1
   if x==m && y==n+1 then g
+  else if g ^. player2 `elem` trees then g & win1 %~ (\_ -> True)
   else if g ^. gameover == True then g
   else if y <= 0  then g
   else 
     check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 a (b-1))))
-
 
 
