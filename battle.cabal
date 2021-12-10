@@ -1,22 +1,18 @@
-name:                snake
+name:                battle
 version:             0.1.0.0
-homepage:            https://github.com/SamTay/snake#readme
+homepage:            https://github.com/LaurensBeYoung/battle-master/#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Sam Tay
-maintainer:          sam.chong.tay@pm.me
-copyright:           2021 Sam Tay
 category:            Web
 build-type:          Simple
 cabal-version:       >=1.10
 extra-source-files:  README.md
 
-executable snake
+executable battle
   hs-source-dirs:      src
-  other-modules:       Snake
-                     , UI
-                     , UI2
+  other-modules:       UI2
                      , Character
+                     , Hotdog
                      
   main-is:             Main.hs
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
