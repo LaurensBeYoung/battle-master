@@ -16,7 +16,7 @@ module Character
     hotdog3,
     hotdog4,
     hotdog5,
-    -- hotdog6,
+    hotdog6,
     beef,
     beefs
     --d, gameOver, --win, --rock, --unwalkable
@@ -61,8 +61,8 @@ data Game = Game
   , _hotdog3 :: Hotdog
   , _hotdog4 :: Hotdog
   , _hotdog5 :: Hotdog
-  -- , _hotdog6 :: Hotdog
-  , _beef :: Coord
+  , _hotdog6 :: Hotdog
+  , _beef :: Coord 
   , _beefs :: Stream Coord      -- ^ the location of the player will be modified via I/O
   , _gameOver :: Bool            -- ^ the bool value mark the game is live or dead      
   --, _rock :: [Coord]
@@ -115,8 +115,6 @@ notInTree s d t = if s `elem` t then notInTree (Character.head d) (Character.tai
 
 initGame :: IO Game
 initGame = do
-  -- (f :| fs) <-
-  --   fromList . randomRs (V2 0 0, V2 (mywidth - 1) (myheight - 10)) <$> newStdGen
   (Cons f fs) <-
     fromList . randomRs (V2 0 0, V2 (mywidth - 1) (myheight - 1)) <$> newStdGen
   let x1 = (mywidth `div` 2) - 1
@@ -139,7 +137,7 @@ initGame = do
         , _hotdog3 = initf3
         , _hotdog4 = initf4
         , _hotdog5 = initf5
-        -- , _hotdog6 = initf6
+        , _hotdog6 = initf6
         , _beef = fd
         , _beefs = fs
         , _gameOver = False
@@ -175,12 +173,12 @@ initState = do
 
 checkWin1 :: Game -> Game
 checkWin1 g = do 
-  if g ^. score1>=10 then g & win1 %~ (\_ -> True)
+  if g ^. score1>=12 then g & win1 %~ (\_ -> True)
   else g
 
 checkWin2 :: Game -> Game
 checkWin2 g = do 
-  if g ^. score2>=10 then g & win2 %~ (\_ -> True)
+  if g ^. score2>=12 then g & win2 %~ (\_ -> True)
   else g
 
 

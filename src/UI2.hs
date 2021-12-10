@@ -84,7 +84,7 @@ main = do
 -- Handling events
 
 handleEvent :: Game -> BrickEvent Name Tick -> EventM Name (Next Game)
-handleEvent g (AppEvent Tick)                       = nextS (checkHit1 $ checkHit2 g)(Cont [(nextResult (g ^. win1) (g ^. win2) (g ^. hotdog1)),(nextResult (g ^. win1) (g ^. win2) (g ^. hotdog2)),(nextResult (g ^. win1) (g ^. win2) (g ^. hotdog3)),(nextResult (g ^. win1) (g ^. win2) (g ^. hotdog4)),(nextResult (g ^. win1) (g ^. win2) (g ^. hotdog5))]) 
+handleEvent g (AppEvent Tick)                       = nextS (checkHit1 $ checkHit2 g)(Cont [(nextResult (g ^. win1) (g ^. win2) (g ^. hotdog1)),(nextResult (g ^. win1) (g ^. win2) (g ^. hotdog2)),(nextResult (g ^. win1) (g ^. win2) (g ^. hotdog3)),(nextResult (g ^. win1) (g ^. win2) (g ^. hotdog4)),(nextResult (g ^. win1) (g ^. win2) (g ^. hotdog5)),(nextResult (g ^. win1) (g ^. win2) (g ^. hotdog6))]) 
 handleEvent g (VtyEvent (V.EvKey V.KUp []))         = continue $ moves2 North g
 handleEvent g (VtyEvent (V.EvKey V.KDown []))       = continue $ moves2 South g
 handleEvent g (VtyEvent (V.EvKey V.KRight []))      = continue $ moves2 East g
@@ -139,7 +139,7 @@ drawScore2 n = withBorderStyle BS.unicodeBold
 
 noMinus :: Int -> Int 
 noMinus n = if n<= 0 then 0
-  else if n >=10 then 10
+  else if n >=12 then 12
   else
     n
 
@@ -159,6 +159,7 @@ drawGrid g = withBorderStyle BS.unicodeBold
       | c == (getCoordinate (g ^. hotdog3)) = HD
       | c == (getCoordinate (g ^. hotdog4)) = HD
       | c == (getCoordinate (g ^. hotdog5)) = HD    
+      | c == (getCoordinate (g ^. hotdog6)) = HD
       | c == g ^. beef = BF
       | otherwise           = Empty
 
@@ -242,7 +243,7 @@ nextS s b = case next s b of
   Left res -> continue (s { _gameOver = False })
 
 next :: Game -> Hotdog.Result [Hotdog.Hotdog] -> Either (Maybe Turn) (IO Game)
-next s (Cont [b1,b2,b3,b4,b5]) = Right (return (s { _hotdog1 = b1, _hotdog2 = b2, _hotdog3 = b3, _hotdog4 = b4, _hotdog5 = b5} ))
+next s (Cont [b1,b2,b3,b4,b5,b6]) = Right (return (s { _hotdog1 = b1, _hotdog2 = b2, _hotdog3 = b3, _hotdog4 = b4, _hotdog5 = b5, _hotdog6 = b6} ))
 
 
 checkHit1 :: Game -> Game
@@ -252,7 +253,7 @@ checkHit1 g = do
   else if (g ^. player1) == (getCoordinate $ g ^. hotdog3) then g & (score1 %~ (\x -> x-1))
   else if (g ^. player1) == (getCoordinate $ g ^. hotdog4) then g & (score1 %~ (\x -> x-1))
   else if (g ^. player1) == (getCoordinate $ g ^. hotdog5) then g & (score1 %~ (\x -> x-1))
-  -- else if (g ^. player1) == (getCoordinate $ g ^. hotdog6) then g & (score1 %~ (\x -> x-1))
+  else if (g ^. player1) == (getCoordinate $ g ^. hotdog6) then g & (score1 %~ (\x -> x-1))
   else
     g
 
@@ -263,7 +264,7 @@ checkHit2 g = do
   else if (g ^. player2) == (getCoordinate $ g ^. hotdog3) then g & (score2 %~ (\x -> x-1))
   else if (g ^. player2) == (getCoordinate $ g ^. hotdog4) then g & (score2 %~ (\x -> x-1))
   else if (g ^. player2) == (getCoordinate $ g ^. hotdog5) then g & (score2 %~ (\x -> x-1))
-  -- else if (g ^. player1) == (getCoordinate $ g ^. hotdog6) then g & (score2 %~ (\x -> x-1))
+  else if (g ^. player1) == (getCoordinate $ g ^. hotdog6) then g & (score2 %~ (\x -> x-1))
   else
     g
 
