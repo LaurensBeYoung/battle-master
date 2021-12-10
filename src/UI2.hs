@@ -127,12 +127,11 @@ drawGrid g = withBorderStyle BS.unicodeBold
       | otherwise           = Empty
 
 drawCell :: Cell -> Widget Name
-drawCell Woods    = withAttr forestAttr $ str "💩 "
-drawCell Empty     = withAttr emptyAttr cw
-drawCell HD        = withAttr hotdogAttr $ str " 😅"
-drawCell Player1   = withAttr player1Attr $ str " 👳"
-drawCell Player2   = withAttr player2Attr $ str " 🧕"
---drawCell Woods     = withAttr forestAttr cw
+drawCell Woods    = withAttr forestAttr $ str "💀 "
+drawCell Empty     = withAttr emptyAttr $ str "🟫 "
+drawCell HD        = withAttr hotdogAttr $ str "🔥 "
+drawCell Player1   = withAttr player1Attr $ str "🎅 "
+drawCell Player2   = withAttr player2Attr $ str "🤡 "
 
 
 
