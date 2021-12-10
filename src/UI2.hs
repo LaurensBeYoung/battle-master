@@ -272,5 +272,3 @@ checkHit2 g = do
 
   
 
-
-

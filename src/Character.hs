@@ -313,3 +313,4 @@ moves2 South g = do
   else 
     check(check_die (g)) & (player2 %~ (\(V2 a b) -> (V2 a (b-1))))
 
+
