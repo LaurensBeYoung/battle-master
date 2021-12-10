@@ -1,11 +1,8 @@
-name:                snake
+name:                battle
 version:             0.1.0.0
-homepage:            https://github.com/SamTay/snake#readme
+homepage:            https://github.com/LaurensBeYoung/battle-master/#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Sam Tay
-maintainer:          sam.chong.tay@pm.me
-copyright:           2021 Sam Tay
 category:            Web
 build-type:          Simple
 cabal-version:       >=1.10
