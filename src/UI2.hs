@@ -145,7 +145,6 @@ noMinus n = if n<= 0 then 0
 
 drawGrid :: Game -> Widget Name
 drawGrid g = withBorderStyle BS.unicodeBold
-  $ B.borderWithLabel (str "Medieval Battle")
   $ vBox rows
   where
     rows         = [hBox $ cellsInRow r | r <- [myheight-1,myheight-2..0]]
@@ -164,12 +163,12 @@ drawGrid g = withBorderStyle BS.unicodeBold
       | otherwise           = Empty
 
 drawCell :: Cell -> Widget Name
-drawCell Woods    = withAttr forestAttr $ str "💀 "
-drawCell Empty     = withAttr emptyAttr $ str "🟫 "
-drawCell HD        = withAttr hotdogAttr $ str "🔥 "
-drawCell BF        = withAttr beefAttr $ str "💰 "
-drawCell Player1   = withAttr player1Attr $ str "🎅 "
-drawCell Player2   = withAttr player2Attr $ str "🤡 "
+drawCell Woods    = withAttr forestAttr $ str "💀"
+drawCell Empty     = withAttr emptyAttr $ str "🟫"
+drawCell HD        = withAttr hotdogAttr $ str "🔥"
+drawCell BF        = withAttr beefAttr $ str "💰"
+drawCell Player1   = withAttr player1Attr $ str "🎅"
+drawCell Player2   = withAttr player2Attr $ str "🤡"
 --drawCell Woods     = withAttr forestAttr cw
 
 
