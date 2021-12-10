@@ -13,9 +13,7 @@ extra-source-files:  README.md
 
 executable snake
   hs-source-dirs:      src
-  other-modules:       Snake
-                     , UI
-                     , UI2
+  other-modules:       UI2
                      , Character
                      , Hotdog
                      

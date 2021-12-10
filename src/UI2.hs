@@ -159,8 +159,7 @@ drawGrid g = withBorderStyle BS.unicodeBold
       | c == (getCoordinate (g ^. hotdog2)) = HD
       | c == (getCoordinate (g ^. hotdog3)) = HD
       | c == (getCoordinate (g ^. hotdog4)) = HD
-      | c == (getCoordinate (g ^. hotdog5)) = HD  
-      -- | c == (getCoordinate (g ^. hotdog6)) = HD    
+      | c == (getCoordinate (g ^. hotdog5)) = HD    
       | c == g ^. beef = BF
       | otherwise           = Empty
 
