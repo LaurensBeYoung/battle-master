@@ -236,7 +236,7 @@ moves1 West g = do
   else if g ^. score1 == 0 then g & win2 %~ (\_ -> True)
   else if g ^. score2 == 0 then g & win1 %~ (\_ -> True)
   -- check if have taken the beef
-  else if g ^. player1 == g ^. beef then  checkWin1 (updateLoc (g & score1 %~ (\x -> x+1)))
+  else if g ^. player1 == g ^. beef then  checkWin1 (updateLoc (g & score1 %~ (\x -> x+2)))
   else if g ^. gameOver == True then g
   else if x <= 0 then g
   else 
@@ -250,7 +250,7 @@ moves1 South g = do
   else if g ^. score1 == 0 then g & win2 %~ (\_ -> True)
   else if g ^. score2 == 0 then g & win1 %~ (\_ -> True)
   -- check if have taken the beef
-  else if g ^. player1 == g ^. beef then  checkWin1 (updateLoc (g & score1 %~ (\x -> x+1)))
+  else if g ^. player1 == g ^. beef then  checkWin1 (updateLoc (g & score1 %~ (\x -> x+2)))
   else if g ^. gameOver == True then g
   else if y <= 0 then g
   else 
@@ -267,7 +267,7 @@ moves2 North g = do
   else if g ^. score1 == 0 then g & win2 %~ (\_ -> True)
   else if g ^. score2 == 0 then g & win1 %~ (\_ -> True)
   -- check if have taken the beef
-  else if g ^. player2 == g ^. beef then  checkWin2 (updateLoc (g & score2 %~ (\x -> x+1)))
+  else if g ^. player2 == g ^. beef then  checkWin2 (updateLoc (g & score2 %~ (\x -> x+2)))
   else if g ^. gameOver == True then g
   else if y >= myheight-1 then g
   else 
@@ -281,7 +281,7 @@ moves2 East g = do
   else if g ^. score1 == 0 then g & win2 %~ (\_ -> True)
   else if g ^. score2 == 0 then g & win1 %~ (\_ -> True)
   -- check if have taken the beef
-  else if g ^. player2 == g ^. beef then  checkWin2 (updateLoc (g & score2 %~ (\x -> x+1)))
+  else if g ^. player2 == g ^. beef then  checkWin2 (updateLoc (g & score2 %~ (\x -> x+2)))
   else if g ^. gameOver == True then g
   else if x >= mywidth-1  then g
   else 
@@ -295,7 +295,7 @@ moves2 West g = do
   else if g ^. score1 == 0 then g & win2 %~ (\_ -> True)
   else if g ^. score2 == 0 then g & win1 %~ (\_ -> True)
   -- check if have taken the beef
-  else if g ^. player2 == g ^. beef then  checkWin2 (updateLoc (g & score2 %~ (\x -> x+1)))
+  else if g ^. player2 == g ^. beef then  checkWin2 (updateLoc (g & score2 %~ (\x -> x+2)))
   else if g ^. gameOver == True then g
   else if x <= 0 then g
   else 
@@ -309,7 +309,7 @@ moves2 South g = do
   else if g ^. score1 == 0 then g & win2 %~ (\_ -> True)
   else if g ^. score2 == 0 then g & win1 %~ (\_ -> True)
   -- check if have taken the beef
-  else if g ^. player2 == g ^. beef then checkWin2 (updateLoc (g & score2 %~ (\x -> x+1))) 
+  else if g ^. player2 == g ^. beef then checkWin2 (updateLoc (g & score2 %~ (\x -> x+2))) 
   else if g ^. gameOver == True then g
   else if y <= 0  then g
   else 
