@@ -97,12 +97,14 @@ fromList :: [a] -> Stream a
 fromList = foldr Cons (error "Streams must be infinite")
 
 trees :: [Coord]
-trees = [(V2 0 11), (V2 0 12), (V2 1 12), (V2 1 11),(V2 2 11), (V2 2 10), (V2 3 10), (V2 3 11), (V2 4 11),              (V2 5 11), (V2 5 12),(V2 6 12), (V2 6 13),(V2 7 13),
-        (V2 7 12), (V2 8 12), (V2 8 11), 
-        --(V2 9 11), (V2 9 12), (V2 10 12), (V2 10 11), 
-        (V2 11 11), (V2 11 12), (V2 12 12), (V2 12 13),(V2 13 13), (V2 13 12),(V2 14 12),(V2 14 11),(V2 15 11),
-        (V2 16 11), (V2 17 11), (V2 18 11), (V2 18 12),(V2 19 12), (V2 20 12)
+trees = 
+  [(V2 4 12),(V2 16 18),(V2 2 16),(V2 12 10),(V2 14 14)]++
+        [(V2 0 7), (V2 0 8), (V2 1 8), (V2 1 7),(V2 2 7), (V2 2 6), (V2 3 7), (V2 5 7), (V2 5 8),(V2 6 8), (V2 6 9),(V2 7 9),
+        (V2 7 8), (V2 8 8), (V2 8 7), 
+        (V2 11 7), (V2 11 8), (V2 12 8), (V2 12 9),(V2 13 9), (V2 13 8),(V2 14 8),(V2 14 7),(V2 15 7),
+        (V2 17 7), (V2 18 7), (V2 18 8),(V2 19 8), (V2 20 8)
         ]
+        ++[(V2 11 3),(V2 10 3),(V2 9 3),(V2 8 3)]
         
 notInTree :: Coord -> Stream Coord -> [Coord] -> Coord
 notInTree s _ [] = s
@@ -206,7 +208,7 @@ moves1 North g = do
   else if g ^. score1 == 0 then g & win2 %~ (\_ -> True)
   else if g ^. score2 == 0 then g & win1 %~ (\_ -> True)
   -- check if have taken the beef
-  else if g ^. player1 == g ^. beef then  checkWin1 (updateLoc (g & score1 %~ (\x -> x+1))) 
+  else if g ^. player1 == g ^. beef then  checkWin1 (updateLoc (g & score1 %~ (\x -> x+2))) 
   else if g ^. gameOver == True then g
   else if y >= myheight-1 then g
   else 
@@ -220,7 +222,7 @@ moves1 East g = do
   else if g ^. score1 == 0 then g & win2 %~ (\_ -> True)
   else if g ^. score2 == 0 then g & win1 %~ (\_ -> True)
   -- check if have taken the beef
-  else if g ^. player1 == g ^. beef then  checkWin1 (updateLoc (g & score1 %~ (\x -> x+1)))
+  else if g ^. player1 == g ^. beef then  checkWin1 (updateLoc (g & score1 %~ (\x -> x+2)))
   else if g ^. gameOver == True then g
   else if x >= mywidth-1  then g
   else 
